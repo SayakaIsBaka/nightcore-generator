@@ -28,7 +28,10 @@ def get_request_url(page):
 
 def get_random_image():
     total_results = int(ElementTree.fromstring(requests.get(get_request_url(1)).content).get('count'))
-    if total_results % 100 == 0:
+    if total_results == 0:
+        print("No images found... Retry by relaunching the script", file=sys.stderr)
+        exit(1)
+    elif total_results % 100 == 0:
         total_results -= 1
     page = randint(0, total_results // 100)
 
