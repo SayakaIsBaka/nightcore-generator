@@ -47,7 +47,7 @@ def get_random_image():
         handler.write(img_data)
 
 def render_video(path):
-    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -tune stillimage -c:a copy -pix_fmt yuv420p -shortest ' + path
+    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -r 1 -c:a copy -pix_fmt yuv420p -shortest ' + path
     return subprocess.call(cmd, shell=True)
 
 def youtube_download(terms):
