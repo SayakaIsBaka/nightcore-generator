@@ -40,6 +40,9 @@ pipenv run python nightcore.py --search [search query]
 
 # To use youtube-dl
 pipenv run python nightcore.py --ytdl [query]
+
+# To set output filename
+pipenv run python nightcore.py --ytdl/search/file -o [output filename]
 ```
 
 ### Without pipenv
@@ -52,6 +55,9 @@ python nightcore.py --search [search query]
 
 # To use youtube-dl
 python nightcore.py --ytdl [query]
+
+# To set output filename
+python nightcore.py --ytdl/search/file -o [output filename]
 ```
 
 I'm deeply sorry for making that, please forgive me
