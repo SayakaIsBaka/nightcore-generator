@@ -45,8 +45,11 @@ def get_random_image():
     with open('tmp/image.jpg', 'wb') as handler:
         handler.write(img_data)
 
-def render_video(path, rate):
-    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -r ' + rate + ' -c:a copy -pix_fmt yuv420p -shortest ' + path
+def render_video(path, singleframe):
+    rate = ''
+    if singleframe:
+        rate = '-r 1 '
+    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 ' + rate + '-c:a copy -pix_fmt yuv420p -shortest ' + path
     return subprocess.call(cmd, shell=True)
 
 def youtube_download(terms):
@@ -85,11 +88,7 @@ def main(args):
     if args.output:
         output = args.output
     
-    rate = "30"
-    if args.frame:
-        rate = "1"
-    
-    return_code = render_video(output, rate)
+    return_code = render_video(output, args.frame)
     shutil.rmtree('tmp')
 
     if return_code == 0:
@@ -104,5 +103,5 @@ if __name__ == "__main__":
     group.add_argument("-s", "--search", help="search for a specific song to Nightcore-ify on YouTube (same as --ytdl ytsearch:[search])")
     group.add_argument("-f", "--file", help="file path to the song to Nightcore-ify")
     parser.add_argument("-o", "--output", help="name of the output file")
-    parser.add_argument("-1", "--frame", action='store_true', help="sets framerate to 1 for faster encoding & lighter file. may affect compatibility")
+    parser.add_argument("-1", "--frame", action='store_true', help="sets framerate to 1 for faster encoding & lighter file. May affect compatibility with some video players")
     main(parser.parse_args())
