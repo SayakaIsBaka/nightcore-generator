@@ -28,6 +28,8 @@ pip install pydub requests youtube-dl
 
 ## Usage
 
+Use the `--help` argument to have a list of the different arguments.
+
 ### Using pipenv
 ```sh
 # To specifiy a local file

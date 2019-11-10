@@ -46,8 +46,8 @@ def get_random_image():
     with open('tmp/image.jpg', 'wb') as handler:
         handler.write(img_data)
 
-def render_video():
-    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -tune stillimage -c:a copy -pix_fmt yuv420p -shortest nightcore.mp4'
+def render_video(path):
+    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -tune stillimage -c:a copy -pix_fmt yuv420p -shortest ' + path
     subprocess.call(cmd, shell=True)
 
 def youtube_download(terms):
@@ -81,7 +81,11 @@ def main(args):
 
     speedup_song(path)
     get_random_image()
-    render_video()
+
+    if args.output:
+        render_video(args.output)
+    else:
+        render_video("nightcore.mp4")
 
     shutil.rmtree('tmp')
     print('Nightcore video successfully generated! You should be ashamed of yourself.')
@@ -93,4 +97,5 @@ if __name__ == "__main__":
     group.add_argument("-y", "--ytdl", help="use youtube-dl to search for a video or download a specific video")
     group.add_argument("-s", "--search", help="search for a specific song to Nightcore-ify on YouTube (same as --ytdl ytsearch:[search])")
     group.add_argument("-f", "--file", help="file path to the song to Nightcore-ify")
+    parser.add_argument("-o", "--output", help="name of the output file")
     main(parser.parse_args())
