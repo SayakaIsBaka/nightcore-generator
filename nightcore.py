@@ -105,5 +105,5 @@ if __name__ == "__main__":
     group.add_argument("-s", "--search", help="search for a specific song to Nightcore-ify on YouTube (same as --ytdl ytsearch:[search])")
     group.add_argument("-f", "--file", help="file path to the song to Nightcore-ify")
     parser.add_argument("-o", "--output", help="name of the output file")
-    parser.add_argument("-1", "--frame", action='store_true', help="sets framerate to 1 for faster encoding & lighter file")
+    parser.add_argument("-1", "--frame", action='store_true', help="sets framerate to 1 for faster encoding & lighter file. may affect compatibility")
     main(parser.parse_args())
