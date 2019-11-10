@@ -23,13 +23,14 @@ def speedup_song(path):
 
     nightcore.export("tmp/nightcore.mp3", format="mp3", bitrate="192k")
 
-def get_request_url(page):
-    tags = ['1girl'] # 'vocaloid', 'looking_at_another', , '1girl+1boy'
-
-    return "https://safebooru.org/index.php?page=dapi&s=post&q=index&pid=" + str(page) + "&tags=width:1920+height:1080+-swimsuit+-feet+-text+score:>=1+" + tags[randint(0, len(tags) - 1)]
+def get_request_url(page, tag):
+    return "https://safebooru.org/index.php?page=dapi&s=post&q=index&pid=" + str(page) + "&tags=width:1920+height:1080+-swimsuit+-feet+-text+score:>=1+" + tag
 
 def get_random_image():
-    total_results = int(ElementTree.fromstring(requests.get(get_request_url(1)).content).get('count'))
+    tags = ['looking_at_another', '1girl', 'vocaloid', '1girl+1boy']
+    tag = tags[randint(0, len(tags) - 1)]
+
+    total_results = int(ElementTree.fromstring(requests.get(get_request_url(1, tag)).content).get('count'))
     if total_results == 0:
         print("No images found... Retry by relaunching the script", file=sys.stderr)
         exit(1)
@@ -37,7 +38,7 @@ def get_random_image():
         total_results -= 1
     page = randint(0, total_results // 100)
 
-    r = requests.get(get_request_url(page))
+    r = requests.get(get_request_url(page, tag))
     image_list = list(ElementTree.fromstring(r.content))
     image_url = image_list[randint(0, len(image_list) - 1)].get('file_url')
     img_data = requests.get(image_url).content
