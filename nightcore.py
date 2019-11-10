@@ -48,7 +48,7 @@ def get_random_image():
 
 def render_video(path):
     cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -tune stillimage -c:a copy -pix_fmt yuv420p -shortest ' + path
-    subprocess.call(cmd, shell=True)
+    return subprocess.call(cmd, shell=True)
 
 def youtube_download(terms):
     ydl_opts = {
@@ -82,14 +82,17 @@ def main(args):
     speedup_song(path)
     get_random_image()
 
+    output = "nightcore.mp4"
     if args.output:
-        render_video(args.output)
-    else:
-        render_video("nightcore.mp4")
-
+        output = args.output
+    
+    return_code = render_video(output)
     shutil.rmtree('tmp')
-    print('Nightcore video successfully generated! You should be ashamed of yourself.')
 
+    if return_code == 0:
+        print('Nightcore video successfully generated! You should be ashamed of yourself.')
+    else:
+        print('Error while rendering video...', file=sys.stderr)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A tool to automatically generate nightcore videos out of an audio file. You should be ashamed of yourself for using that.")
