@@ -9,6 +9,7 @@ Please do not actually use this to make actual Nightcore videos and upload them.
 - Python 3 (tested on 3.7)
 - [pydub](https://github.com/jiaaro/pydub)
 - [requests](https://pypi.org/project/requests)
+- [youtube-dl](http://ytdl-org.github.io/youtube-dl)
 - ffmpeg
 
 ## Setting up
@@ -22,7 +23,7 @@ pipenv install
 
 ### Without pipenv
 ```sh
-pip install pydub requests
+pip install pydub requests youtube-dl
 ```
 
 ## Usage

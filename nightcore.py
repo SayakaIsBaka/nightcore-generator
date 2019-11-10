@@ -11,6 +11,8 @@ import os
 import shutil
 import requests
 import subprocess
+import argparse
+import youtube_dl
 
 def speedup_song(path):
     sound = AudioSegment.from_file(path)
@@ -22,7 +24,7 @@ def speedup_song(path):
     nightcore.export("tmp/nightcore.mp3", format="mp3", bitrate="192k")
 
 def get_request_url(page):
-    tags = ['vocaloid', 'looking_at_another', '1girl', '1girl+1boy']
+    tags = ['1girl'] # 'vocaloid', 'looking_at_another', , '1girl+1boy'
 
     return "https://safebooru.org/index.php?page=dapi&s=post&q=index&pid=" + str(page) + "&tags=width:1920+height:1080+-swimsuit+-feet+-text+score:>=1+" + tags[randint(0, len(tags) - 1)]
 
@@ -47,10 +49,34 @@ def render_video():
     cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -tune stillimage -c:a copy -pix_fmt yuv420p -shortest nightcore.mp4'
     subprocess.call(cmd, shell=True)
 
-def main(path):
+def youtube_download(terms):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'outtmpl': 'tmp/youtubedl.mp3'
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([terms])
+
+def main(args):
     if (os.path.isdir('tmp')):
         shutil.rmtree('tmp')
     os.mkdir('tmp')
+
+    if args.ytdl:
+        youtube_download(args.ytdl)
+        path = 'tmp/youtubedl.mp3'
+    
+    elif args.search:
+        youtube_download('ytsearch:' + args.search)
+        path = 'tmp/youtubedl.mp3'
+
+    elif args.file:
+        path = args.file
 
     speedup_song(path)
     get_random_image()
@@ -61,7 +87,9 @@ def main(path):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 1:
-        print("Usage: nightcore.py [path to music file]", file=sys.stderr)
-    else:
-        main(sys.argv[1])
+    parser = argparse.ArgumentParser(description="A tool to automatically generate nightcore videos out of an audio file. You should be ashamed of yourself for using that.")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-y", "--ytdl", help="use youtube-dl to search for a video or download a specific video")
+    group.add_argument("-s", "--search", help="search for a specific song to Nightcore-ify on YouTube (same as --ytdl ytsearch:[search])")
+    group.add_argument("-f", "--file", help="file path to the song to Nightcore-ify")
+    main(parser.parse_args())
