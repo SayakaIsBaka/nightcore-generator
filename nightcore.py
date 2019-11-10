@@ -10,7 +10,6 @@ import sys
 import os
 import shutil
 import requests
-import ffmpeg
 import subprocess
 
 def speedup_song(path):
@@ -28,9 +27,12 @@ def get_request_url(page):
     return "https://safebooru.org/index.php?page=dapi&s=post&q=index&pid=" + str(page) + "&tags=width:1920+height:1080+-swimsuit+-feet+-text+score:>=1+" + tags[randint(0, len(tags) - 1)]
 
 def get_random_image():
-    total_results = ElementTree.fromstring(requests.get(get_request_url(1)).content).get('count')
+    total_results = int(ElementTree.fromstring(requests.get(get_request_url(1)).content).get('count'))
+    if total_results % 100 == 0:
+        total_results -= 1
+    page = randint(0, total_results // 100)
 
-    r = requests.get(get_request_url(randint(0, int(total_results) // 100)))
+    r = requests.get(get_request_url(page))
     image_list = list(ElementTree.fromstring(r.content))
     image_url = image_list[randint(0, len(image_list) - 1)].get('file_url')
     img_data = requests.get(image_url).content
@@ -39,7 +41,7 @@ def get_random_image():
         handler.write(img_data)
 
 def render_video():
-    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest nightcore.mp4'
+    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 -tune stillimage -c:a copy -pix_fmt yuv420p -shortest nightcore.mp4'
     subprocess.call(cmd, shell=True)
 
 def main(path):
