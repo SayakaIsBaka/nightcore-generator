@@ -3,7 +3,7 @@
 from pydub import AudioSegment
 from pydub import effects
 
-from random import randint, choice
+from random import randrange, choice
 from xml.etree import ElementTree
 
 import sys
@@ -34,13 +34,12 @@ def get_random_image():
     if total_results == 0:
         print("No images found... Retry by relaunching the script", file=sys.stderr)
         exit(1)
-    elif total_results % 100 == 0:
-        total_results -= 1
-    page = randint(0, total_results // 100)
+    image_id = randrange(0, total_results)
+    page = image_id // 100
 
     r = requests.get(get_request_url(page, tag))
     image_list = list(ElementTree.fromstring(r.content))
-    image_url = choice(image_list).get('file_url')
+    image_url = image_list[image_id % 100].get('file_url')
     img_data = requests.get(image_url).content
 
     with open('tmp/image.jpg', 'wb') as handler:
