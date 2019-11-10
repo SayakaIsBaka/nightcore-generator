@@ -30,12 +30,26 @@ pip install pydub requests youtube-dl
 
 ### Using pipenv
 ```sh
-pipenv run python nightcore.py [audio file]
+# To specifiy a local file
+pipenv run python nightcore.py --file [audio file]
+
+# To search on YouTube
+pipenv run python nightcore.py --search [search query]
+
+# To use youtube-dl
+pipenv run python nightcore.py --ytdl [query]
 ```
 
 ### Without pipenv
 ```sh
-python nightcore.py [audio file]
+# To specifiy a local file
+python nightcore.py --file [audio file]
+
+# To search on YouTube
+python nightcore.py --search [search query]
+
+# To use youtube-dl
+python nightcore.py --ytdl [query]
 ```
 
 I'm deeply sorry for making that, please forgive me
