@@ -27,7 +27,7 @@ def get_request_url(page, tag):
     return "https://safebooru.org/index.php?page=dapi&s=post&q=index&pid=" + str(page) + "&tags=width:1920+height:1080+-swimsuit+-feet+-text+score:>=1+" + tag
 
 def get_random_image():
-    tags = ['looking_at_another', '1girl', 'vocaloid', '1girl+1boy']
+    tags = ['looking_at_another', '1girl', 'vocaloid', '1girl+1boy', '2girls']
     tag = choice(tags)
 
     total_results = int(ElementTree.fromstring(requests.get(get_request_url(1, tag)).content).get('count'))
