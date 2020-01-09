@@ -12,6 +12,9 @@ import subprocess
 import argparse
 import youtube_dl
 
+pid = os.getpid()
+tmp_dir = "tmp_" + str(pid)
+
 
 def speedup_song(path):
     sound = AudioSegment.from_file(path)
@@ -20,7 +23,7 @@ def speedup_song(path):
     new_sample_rate = int(sound.frame_rate * (2.0 ** octaves))
     nightcore = sound._spawn(sound.raw_data, overrides={'frame_rate': new_sample_rate}).set_frame_rate(44100)
 
-    nightcore.export("tmp/nightcore.mp3", format="mp3", bitrate="192k")
+    nightcore.export(tmp_dir + "/nightcore.mp3", format="mp3", bitrate="192k")
 
 
 def get_request_url(page, tag):
@@ -44,7 +47,7 @@ def get_random_image():
     image_url = image_list[image_id % 100].get('file_url')
     img_data = requests.get(image_url).content
 
-    with open('tmp/image.jpg', 'wb') as handler:
+    with open(tmp_dir + '/image.jpg', 'wb') as handler:
         handler.write(img_data)
 
 
@@ -52,8 +55,8 @@ def render_video(path, singleframe):
     rate = ''
     if singleframe:
         rate = '-r 1 '
-    cmd = 'ffmpeg -loop 1 -i tmp/image.jpg -i tmp/nightcore.mp3 -c:v libx264 ' + rate + '-c:a copy -pix_fmt yuv420p ' \
-                                                                                        '-shortest ' + path
+    cmd = 'ffmpeg -loop 1 -i ' + tmp_dir + '/image.jpg -i ' + tmp_dir + '/nightcore.mp3 -c:v libx264 ' + rate + '-c:a copy -pix_fmt yuv420p ' \
+                                                                                                                '-shortest ' + path
     return subprocess.call(cmd, shell=True)
 
 
@@ -65,25 +68,25 @@ def youtube_download(terms):
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-        'outtmpl': 'tmp/youtubedl.mp3'
+        'outtmpl': tmp_dir + '/youtubedl.mp3'
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([terms])
 
 
 def main(args):
-    if os.path.isdir('tmp'):
-        shutil.rmtree('tmp')
-    os.mkdir('tmp')
+    if os.path.isdir(tmp_dir):
+        shutil.rmtree(tmp_dir)
+    os.mkdir(tmp_dir)
 
     path = ''
     if args.ytdl:
         youtube_download(args.ytdl)
-        path = 'tmp/youtubedl.mp3'
+        path = tmp_dir + '/youtubedl.mp3'
 
     elif args.search:
         youtube_download('ytsearch:' + args.search)
-        path = 'tmp/youtubedl.mp3'
+        path = tmp_dir + '/youtubedl.mp3'
 
     elif args.file:
         path = args.file
@@ -91,12 +94,12 @@ def main(args):
     speedup_song(path)
     get_random_image()
 
-    output = "nightcore.mp4"
+    output = "nightcore_" + str(pid) + ".mp4"
     if args.output:
         output = args.output
 
     return_code = render_video(output, args.frame)
-    shutil.rmtree('tmp')
+    shutil.rmtree(tmp_dir)
 
     if return_code == 0:
         print('Nightcore video successfully generated! You should be ashamed of yourself.')
