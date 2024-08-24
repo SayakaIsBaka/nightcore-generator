@@ -10,7 +10,7 @@ import shutil
 import requests
 import subprocess
 import argparse
-import youtube_dl
+import yt_dlp
 
 pid = os.getpid()
 tmp_dir = "tmp_" + str(pid)
@@ -68,9 +68,9 @@ def youtube_download(terms):
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-        'outtmpl': tmp_dir + '/youtubedl.mp3'
+        'outtmpl': tmp_dir + '/yt_dlp.mp3'
     }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([terms])
 
 
@@ -82,11 +82,11 @@ def main(args):
     path = ''
     if args.ytdl:
         youtube_download(args.ytdl)
-        path = tmp_dir + '/youtubedl.mp3'
+        path = tmp_dir + '/yt_dlp.mp3'
 
     elif args.search:
         youtube_download('ytsearch:' + args.search)
-        path = tmp_dir + '/youtubedl.mp3'
+        path = tmp_dir + '/yt_dlp.mp3'
 
     elif args.file:
         path = args.file
@@ -112,7 +112,7 @@ if __name__ == "__main__":
         description="A tool to automatically generate nightcore videos out of an audio file. You should be ashamed of "
                     "yourself for using that.")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-y", "--ytdl", help="use youtube-dl to search for a video or download a specific video")
+    group.add_argument("-y", "--ytdl", help="use yt-dlp to search for a video or download a specific video")
     group.add_argument("-s", "--search",
                        help="search for a specific song to Nightcore-ify on YouTube (same as --ytdl ytsearch:[search])")
     group.add_argument("-f", "--file", help="file path to the song to Nightcore-ify")
