@@ -9,7 +9,7 @@ pylint = "*"
 [packages]
 pydub = "*"
 requests = "*"
-youtube-dl = "*"
+yt-dlp = {extras = ["default"], version = "*"}
 
 [requires]
-python_version = "3.7"
+python_version = "3.9"
