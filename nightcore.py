@@ -68,7 +68,7 @@ def youtube_download(terms):
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-        'outtmpl': tmp_dir + '/yt_dlp.mp3'
+        'outtmpl': tmp_dir + '/yt_dlp'
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([terms])
