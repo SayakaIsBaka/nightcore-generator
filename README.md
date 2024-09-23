@@ -23,7 +23,7 @@ pipenv install
 
 ### Without pipenv
 ```sh
-pip install pydub requests youtube-dl
+pip install pydub requests youtube-dl ffmpeg-python
 ```
 
 ## Usage
